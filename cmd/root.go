@@ -8,6 +8,11 @@ import (
 	"test01/provider"
 	"time"
 
+	_ "test01/docs"
+
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -23,6 +28,7 @@ func Execute() {
 		logrus.Fatalf("Error setting up database %v", err)
 	}
 
+	server.RegisterRoute("GET", "documentation/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	provider.NewProvider(db, server)
 	go func() {
 		if err := server.Start(ctx, os.Getenv(config.AppPort)); err != nil {

@@ -1,0 +1,109 @@
+basePath: /api/v1
+definitions:
+  interfacesx.ResponseStatus:
+    enum:
+    - success
+    - error
+    type: string
+    x-enum-varnames:
+    - StatusSuccess
+    - StatusError
+  interfacesx.UserData:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      username:
+        type: string
+    type: object
+  interfacesx.UserRegistrationRequest:
+    properties:
+      email:
+        type: string
+      fullName:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - fullName
+    - username
+    type: object
+  interfacesx.UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/interfacesx.UserData'
+      message:
+        type: string
+      status:
+        $ref: '#/definitions/interfacesx.ResponseStatus'
+    type: object
+  model.Role:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - AdminRole
+    - UserRole
+host: http://0.0.0.0:8080
+info:
+  contact:
+    name: Silas Ogar
+  description: This is a sample server celler server.
+  title: Swagger Documentation tUTORIAL
+  version: "1.0"
+paths:
+  /{email}:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint is for fetching a new users
+      parameters:
+      - description: Users Email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfacesx.UserResponse'
+      summary: Gets a new user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint is for creating new users
+      parameters:
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/interfacesx.UserRegistrationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfacesx.UserResponse'
+      summary: Creating a new user
+      tags:
+      - auth
+swagger: "2.0"

@@ -21,6 +21,14 @@ func NewUserHandler(userService services.UserService) *UserHandler {
 	}
 }
 
+// @Summary Creating a new user
+// @Description This endpoint is for creating new users
+// @Tags auth
+// @Accept json
+// @Produce json
+// @param user body interfacesx.UserRegistrationRequest true "User object"
+// @Success 200 {object} interfacesx.UserResponse
+// @Router /register [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var userRequest interfacesx.UserRegistrationRequest
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -62,7 +70,14 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	})
 }
 
-// Retrieve a user
+// @Summary Gets a new user
+// @Description This endpoint is for fetching a new users
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} interfacesx.UserResponse
+// @Param email path string true "Users Email"
+// @Router /{email} [get]
 func (h *UserHandler) GetUser(c *gin.Context) {
 	userEmail := c.Param("email")
 
