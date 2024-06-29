@@ -18,3 +18,9 @@ You need to install the following
 3. A code Editor of your choice.
 
 In a production environment, do not forget to include a gitignore file.
+
+## Running the documentation with swagger
+
+You need to follow the instructions specified here
+https://github.com/swaggo/gin-swagger?tab=readme-ov-file
+
