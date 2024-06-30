@@ -48,3 +48,9 @@ type RouteDefinition struct {
 	Method  string
 	Handler gin.HandlerFunc
 }
+
+type LoginResponse struct {
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expiresAt"`
+	User      UserData  `json:"user"`
+}

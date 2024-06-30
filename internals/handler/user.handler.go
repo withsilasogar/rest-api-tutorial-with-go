@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"test01/internals/services"
 	"test01/x/interfacesx"
+	"test01/x/paseto"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
@@ -62,11 +64,53 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, interfacesx.UserResponse{
-		Message: "User created successfully",
-		Status:  interfacesx.StatusSuccess,
-		Code:    http.StatusOK,
-		Data:    *userData,
+	//Generate  A token
+	//In a real world project, use a symetric key from your env
+	tokenGenerator, err := paseto.NewPasetoGenerator("0123456789abcdef0123456789abcdef")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, interfacesx.ErrorMessage{
+			Message: err.Error(),
+			Status:  interfacesx.StatusError,
+			Code:    http.StatusInternalServerError,
+		})
+
+		return
+	}
+
+	// In a real world project, this value should as well come from your environment variables
+	duration, err := time.ParseDuration("24h")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, interfacesx.ErrorMessage{
+			Message: err.Error(),
+			Status:  interfacesx.StatusError,
+			Code:    http.StatusInternalServerError,
+		})
+
+		return
+	}
+
+	token, payload, err := tokenGenerator.GenerateToken(*userData, duration)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, interfacesx.ErrorMessage{
+			Message: err.Error(),
+			Status:  interfacesx.StatusError,
+			Code:    http.StatusInternalServerError,
+		})
+
+		return
+	}
+
+	// c.JSON(http.StatusOK, interfacesx.UserResponse{
+	// 	Message: "User created successfully",
+	// 	Status:  interfacesx.StatusSuccess,
+	// 	Code:    http.StatusOK,
+	// 	Data:    *userData,
+	// })
+
+	c.JSON(http.StatusOK, interfacesx.LoginResponse{
+		Token:     token,
+		ExpiresAt: payload.ExpiresAt,
+		User:      payload.User,
 	})
 }
 
